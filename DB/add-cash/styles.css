@@ -1,0 +1,115 @@
+/* Overall page styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+  }
+  
+  header {
+    background-color: #ff0000;
+    color: white;
+    padding: 20px;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .subtitle {
+    font-size: 14px;
+    font-weight: normal;
+    margin: 0;
+  }
+  
+  main {
+    padding: 20px;
+  }
+  
+  /* Wallet Balance */
+  .balance-card {
+    margin: 20px auto;
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    font-size: 20px;
+    display: inline-block;
+    color: blck;
+  }
+  
+  .balance {
+    font-weight: bold;
+    color: #00aa28;
+  }
+  
+  /* Add Amount Form */
+  .add-cash-form {
+    max-width: 400px;
+    margin: 20px auto;
+    text-align: center;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  input[type="number"] {
+    width: 80%;
+    font-size: 16px;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    text-align: center;
+  }
+  
+  /* Quick Amount Buttons */
+  .quick-amount-buttons button {
+    background-color: white;
+    border: 1px solid #ddd;
+    color: rgb(105, 105, 105);
+    padding: 10px 30px;
+    margin: 5px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+.msg{
+  padding:3px;
+  text-align: center;
+  color: rgba(255, 0, 0, 0.729);
+}
+
+  button.add-money {
+    background-color: #00c106;
+    color: white;
+    
+    padding: 12px 30px;
+    font-size: 18px;
+    border: none;
+    border-radius: 8px;
+    margin-top: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  button.add-money:hover {
+    background-color: #218838;
+  }
+  
+
+  input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}

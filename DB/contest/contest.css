@@ -1,0 +1,70 @@
+
+body {
+    margin: 0;
+    font-family: 'Poppins', Arial, sans-serif;
+    background: #f4f4f9;
+    color: #333;
+
+}
+
+h1,
+h2,
+h3 {
+    margin: 0;
+    font-weight: bold;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+.test{
+    width:100px;
+    height: 100px;
+    fill: #bbbbbb;
+}
+
+.vs{
+    width:40px;
+    height:40px;
+}
+.team-header{
+    background: linear-gradient(135deg, #a10000,#480000);
+    padding: 15px;
+    color: #fff;
+    font-weight: bold;
+
+}
+.team_nick{
+    display: flex;
+   
+
+}
+.teams{
+    justify-content: center;
+    display: flex;
+    gap: 10px;
+}
+.teams img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.img_container2,
+.img_container {
+    width: 50px;
+    height: 50px;
+    overflow: hidden;
+    position: relative;
+    border-radius: 100px;
+}
+
+.time{
+    font-weight: normal;
+    color: #fff;
+    text-align: center;
+    font-size:14px;
+    margin-right:4px;
+}

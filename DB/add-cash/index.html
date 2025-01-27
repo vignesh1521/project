@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Cash</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    Add Money to Your Wallet
+    <p class="subtitle">Secure and simple way to top-up</p>
+  </header>
+
+  <main>
+    <!-- Wallet Balance -->
+    <div class="balance-card">
+    💸Current Wallet Balance: <span class="balance" id="fund">₹0</span>
+    </div>
+
+    <!-- Add Amount Section -->
+    <div class="add-cash-form">
+      <label for="amount-input">Enter the Amount You Want to Add:</label>
+      <input type="number" id="amount-input" placeholder="Enter custom amount, e.g., ₹500">
+      
+      <!-- Quick Amount Buttons -->
+      <div class="quick-amount-buttons">
+        <button type="button" onclick="setAmount(100)">₹100</button>
+        <button type="button" onclick="setAmount(200)">₹200</button>
+        <button type="button" onclick="setAmount(500)">₹500</button>
+      </div>
+      <div class="msg" id="msg"></div>
+      <button onclick="userStatus()" type="" class="add-money">Add Cash</button>
+      <!-- Add Cash Button -->
+    </div>
+  </main>
+
+
+  <!-- JavaScript -->
+ 
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

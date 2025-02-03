@@ -1,0 +1,1006 @@
+body {
+    margin: 0;
+    font-family: 'Poppins', Arial, sans-serif;
+    background: #f4f4f9;
+    color: #333;
+
+}
+
+h1,
+h2,
+h3 {
+    margin: 0;
+    font-weight: bold;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    -webkit-tap-highlight-color: transparent; 
+
+}
+* {
+    user-select: none;
+    -webkit-user-select: none; /* For Safari */
+    -moz-user-select: none; /* For Firefox */
+    -ms-user-select: none; /* For Internet Explorer/Edge */
+}
+
+button{
+    -webkit-tap-highlight-color: transparent; 
+}
+/* From Uiverse.io by joe-watson-sbf */ 
+.btn {
+    font-size: 17px;
+    background: transparent;
+    border: none;
+    padding: 1em 1.5em;
+    color: #ffedd3;
+    text-transform: uppercase;
+    position: absolute;
+    top: 5px;
+    right: 20px;
+    transition: 0.5s ease;
+    cursor: pointer;
+  }
+  
+  .btn::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 2px;
+    width: 0;
+    background-color: #ffc506;
+    transition: 0.5s ease;
+  }
+  
+  .btn:hover {
+    color: #1e1e2b;
+    transition-delay: 0.5s;
+  }
+  
+  .btn:hover::before {
+    width: 100%;
+  }
+  
+  .btn::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 0;
+    width: 100%;
+    background-color: #ffc506;
+    transition: 0.4s ease;
+    z-index: -1;
+  }
+  
+  .btn:hover::after {
+    height: 100%;
+    transition-delay: 0.4s;
+    color: aliceblue;
+  }
+
+  
+.header {
+    background: linear-gradient(135deg, #a10000,#480000);
+    color: #fff;
+    padding: 20px 10px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.header h1 {
+    font-size: 24px;
+}
+
+.brand-highlight {
+    color: #ffdd00;
+}
+
+.hero {
+    text-align: center;
+    background: linear-gradient(to right, #ffdd00, #fdf2d0);
+    padding: 10px 10px;
+    margin-bottom: 20px;
+}
+
+.hero h2 {
+    font-size: 28px;
+    color: #b62020;
+}
+
+.hero .tagline {
+    font-size: 16px;
+    color: #555;
+}
+
+.matches {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 10px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.214);
+}
+
+.match-card {
+    padding: 8px;
+    padding-top: 10px;
+    background: linear-gradient(145deg, #fff1f1ba, #e1d6d6b2);
+    border-radius: 15px;
+    overflow: hidden;
+    position: relative;
+
+}
+
+.match-card:hover {
+    background: linear-gradient(145deg, #e1d6d6b2, #fff1f1ba);
+}
+
+.match-info {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 10px
+}
+
+.team h3 {
+    font-size: 18px;
+    color: #333;
+}
+
+.img_container2 {
+    margin-left: 55px;
+}
+
+.s_team {
+    position: relative;
+    left: 20px;
+    text-align: right;
+    overflow: hidden;
+    width: 120px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+
+}
+
+.f_team {
+    text-align: left;
+    overflow: hidden;
+    width: 180px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.img_container2,
+.img_container {
+    width: 100px;
+    height: 100px;
+    overflow: hidden;
+    position: relative;
+    border-radius: 100px;
+}
+
+.team_details {
+    width: 50%;
+    position: absolute;
+    top: 15%;
+    left: 14%;
+}
+
+.team2_details {
+    position: absolute;
+    top: 15%;
+    right: -30%;
+    width: 50%;
+}
+
+.team img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.match-time {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+}
+
+.match-time h3 {
+    font-size: 16px;
+    color: #b62020;
+    text-align: center;
+    position: relative;
+    bottom: 8px;
+}
+
+.prize-info {
+    margin-bottom: 10px;
+}
+
+.prize-info span {
+
+    font-size: 14px;
+
+
+}
+
+.prize {
+    position: absolute;
+    right: 10px;
+}
+
+.highlight {
+    font-weight: bold;
+    color: #b62020;
+}
+
+.progress-bar {
+    background: #ddd;
+    border-radius: 8px;
+    height: 10px;
+    margin: 10px 5px 10px 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.filled-bar {
+    height: 100%;
+    width: 80%;
+    background: #b62020;
+    transition: width 0.3s;
+
+}
+
+
+.action-buttons {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 15px;
+}
+
+.view-contests {
+    display: flex;
+    justify-content: center;
+}
+
+.match a{
+
+    background: linear-gradient(90deg, #28a745, #34ce57);
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.match a:hover {
+    background: linear-gradient(90deg, #34ce57, #28a745);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+}
+
+.tutorial {
+    text-align: center;
+    padding: 30px;
+    background: #ffdd00;
+    border-radius: 12px;
+    margin: 20px auto;
+    max-width: 900px;
+}
+
+.tutorial h2 {
+    color: #b62020;
+}
+
+.tutorial a {
+    background: #b62020;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 25px;
+}
+
+
+@media(max-width:1180px) {
+    .matches {
+        max-width: 800px;
+    }
+
+    .hero {
+        padding: 8px 8px;
+    }
+
+    .hero h2 {
+        font-size: 26px;
+    }
+
+    .img_container,
+    .img_container2 {
+        width: 80px;
+        height: 80px;
+    }
+
+    .img_container {
+        left: 15px;
+    }
+
+    .img_container2 {
+        right: 15px;
+        margin-left: 65px;
+    }
+
+    .progress-bar {
+        height: 9px;
+    }
+
+    .tutorial {
+        max-width: 800px;
+    }
+
+}
+
+@media(max-width:1000px) {
+    .matches {
+        max-width: 700px;
+    }
+
+    .hero {
+        padding: 6px 6px;
+    }
+
+    .hero h2 {
+        font-size: 24px;
+    }
+
+    .img_container,
+    .img_container2 {
+        width: 75px;
+        height: 75px;
+    }
+
+    .img_container {
+        left: 15px;
+    }
+
+    .img_container2 {
+        right: 15px;
+        margin-left: 65px;
+    }
+
+    .team_details {
+        left: 17%;
+    }
+
+    .team2_details {
+        right: -27%;
+    }
+
+    .match-time h3 {
+        font-size: 15px;
+    }
+
+    .tutorial {
+        max-width: 700px;
+    }
+
+}
+
+@media(max-width:850px) {
+    .matches {
+        max-width: 600px;
+    }
+
+    .header {
+        padding: 15px 5px;
+    }
+
+    .hero {
+        padding: 3px 3px;
+    }
+
+    .hero h2 {
+        font-size: 20px;
+        padding-top: 10px;
+    }
+
+    .img_container,
+    .img_container2 {
+        width: 70px;
+        height: 70px;
+    }
+
+    .img_container {
+        left: 13px;
+    }
+
+    .img_container2 {
+        right: 13px;
+        margin-left: 65px;
+    }
+
+    .s_team,
+    .f_team {
+        font-size: 14px;
+    }
+
+    .team_details {
+        left: 17%;
+    }
+
+    .team2_details {
+        right: -24.5%;
+    }
+
+    .progress-bar {
+        height: 8px;
+    }
+
+    .match-time h3 {
+        font-size: 14px;
+    }
+
+    .match-time p {
+        font-size: 15px;
+    }
+
+    .tutorial {
+        padding: 20px;
+        max-width: 600px;
+    }
+
+    .tutorial h2 {
+        font-size: 24px;
+    }
+
+}
+
+@media(max-width:700px) {
+    .matches {
+        max-width: 500px;
+    }
+
+
+    .img_container,
+    .img_container2 {
+        width: 60px;
+        height: 60px;
+    }
+
+    .img_container {
+        left: 13px;
+    }
+
+    .img_container2 {
+        right: 14px;
+        margin-left: 65px;
+    }
+
+    .team_details {
+        left: 18%;
+    }
+
+    .team2_details {
+        right: -23%;
+    }
+
+    .team_details h3,
+    .team2_details h3 {
+        font-size: 17px;
+    }
+
+    .progress-bar {
+        height: 7px;
+    }
+
+    .prize-info span {
+        font-size: 13px;
+    }
+
+    .view-contests a {
+        font-size: 14px;
+    }
+
+    .tutorial {
+        padding: 20px;
+        max-width: 500px;
+    }
+}
+
+@media(max-width:600px) {
+    .matches {
+        max-width: 450px;
+    }
+
+    .header {
+        padding: 14px 3px;
+    }
+
+    .header h1 {
+        font-size: 22px;
+    }
+
+    .match-card {
+        padding-top: 2px;
+    }
+
+    .hero h2 {
+        font-size: 18px;
+    }
+
+    .hero .tagline {
+        font-size: 14px;
+    }
+
+    .img_container,
+    .img_container2 {
+        position: relative;
+        top: 10px;
+        width: 50px;
+        height: 50px;
+    }
+
+    .img_container {
+        left: 7px;
+    }
+
+    .img_container2 {
+        right: 9px;
+        margin-left: 64px;
+    }
+
+    .team_details {
+        left: 16%;
+    }
+
+    .team2_details {
+        right: -26%;
+    }
+
+    .s_team,
+    .f_team {
+        font-size: 12px;
+        margin-top: 15px;
+        margin-bottom: 4px;
+
+    }
+
+    .s_team {
+        width: 100px;
+    }
+
+    .team_details h3,
+    .team2_details h3 {
+        font-size: 13px;
+    }
+
+    .match-time h3 {
+        font-size: 12px;
+    }
+
+    .match-time p {
+        font-size: 13px;
+    }
+
+    .progress-bar {
+        height: 6px;
+        margin: 5px 0 5px 0;
+    }
+
+    .prize-info span {
+        font-size: 12px;
+    }
+
+    .view-contests a {
+        padding: 8px 16px;
+        font-size: 13px;
+    }
+
+    .tutorial {
+        padding: 20px;
+        max-width: 400px;
+    }
+
+    .tutorial h2 {
+        font-size: 22px;
+    }
+
+    .tutorial p {
+        font-size: 14px;
+    }
+}
+
+@media(max-width:500px) {
+    .matches {
+        max-width: 400px;
+        padding: 8px;
+    }
+
+    .header {
+        padding: 14px 3px;
+    }
+
+    .header h1 {
+        font-size: 22px;
+    }
+
+    .match-card {
+        padding: 6px;
+        padding-top: 2px;
+
+    }
+
+    .hero h2 {
+        font-size: 18px;
+    }
+
+    .hero .tagline {
+        font-size: 14px;
+        margin-top: 5px;
+    }
+
+    .img_container,
+    .img_container2 {
+        position: relative;
+        top: 8px;
+        width: 40px;
+        height: 40px;
+    }
+
+    .team_details {
+        left: 15%;
+    }
+
+    .team2_details {
+        right: -27%;
+    }
+
+    .s_team,
+    .f_team {
+        font-size: 11px;
+        margin-top: 15px;
+        margin-bottom: 2px;
+    }
+
+    .s_team {
+        width: 100px;
+        left: 16px;
+    }
+
+    .team_details h3,
+    .team2_details h3 {
+        font-size: 12px;
+    }
+
+    .match-time h3 {
+        font-size: 11px;
+    }
+
+    .match-time p {
+        font-size: 12px;
+    }
+
+    .progress-bar {
+        height: 5px;
+        margin: 4px 0 4px 0;
+    }
+
+    .prize-info span {
+        font-size: 11px;
+    }
+
+    .view-contests a {
+        padding: 10px 14px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .tutorial {
+        padding: 18px;
+        max-width: 300px;
+    }
+
+    .tutorial h2 {
+        font-size: 20px;
+    }
+
+    .tutorial p {
+        margin-top: 6px;
+        font-size: 12px;
+    }
+
+    .tutorial a {
+        font-size: 12px;
+        padding: 10px 10px;
+
+    }
+}
+
+@media(max-width:450px) {
+    .matches {
+        max-width: 370px;
+        padding: 8px;
+    }
+
+    .team_details {
+        left: 16%;
+    }
+
+    .team2_details {
+        right: -25%;
+    }
+
+}
+
+@media(max-width:420px) {
+    .matches {
+        max-width: 350px;
+        padding: 5px;
+    }
+
+    .header {
+        padding: 12px 3px;
+    }
+
+    .header h1 {
+        font-size: 17px;
+    }
+
+    .match-card {
+        padding: 6px;
+        padding-top: 2px;
+
+    }
+
+    .hero h2 {
+        font-size: 16px;
+    }
+
+    .hero {
+        padding: 2px;
+    }
+
+    .hero .tagline {
+        font-size: 13px;
+        margin-top: 5px;
+    }
+
+    .img_container,
+    .img_container2 {
+        position: relative;
+        top: 10px;
+        width: 35px;
+        height: 35px;
+    }
+
+    .team_details {
+        left: 15.6%;
+    }
+
+    .team2_details {
+        right: -24.8%;
+    }
+
+    .s_team {
+        width: 100px;
+        left: 13px;
+    }
+
+    .team_details h3,
+    .team2_details h3 {
+        font-size: 12px;
+    }
+
+    .match-time h3 {
+        font-size: 11px;
+    }
+
+    .match-time p {
+        font-size: 12px;
+    }
+
+    .progress-bar {
+        height: 4.5px;
+        margin: 4px 0 4px 0;
+    }
+
+    .prize-info span {
+        font-size: 10px;
+    }
+
+    .view-contests a {
+        padding: 8px 14px;
+        font-size: 12px;
+
+    }
+
+    .tutorial {
+        padding: 15px;
+        max-width: 300px;
+    }
+
+    .tutorial h2 {
+        font-size: 18px;
+    }
+
+    .tutorial p {
+        margin-top: 6px;
+        font-size: 12px;
+    }
+
+    .tutorial a {
+        font-size: 12px;
+        padding: 8px 8px;
+    }
+}
+
+@media(max-width:390px) {
+    .matches {
+        max-width: 330px;
+    }
+
+    .img_container,
+    .img_container2 {
+        position: relative;
+        top: 10px;
+        width: 33px;
+        height: 33px;
+    }
+
+    .team_details {
+        left: 16%;
+    }
+
+    .team2_details {
+        right: -23.5%;
+    }
+
+    .tutorial {
+        padding: 15px;
+        max-width: 290px;
+    }
+
+}
+
+@media(max-width:360px) {
+    .matches {
+        max-width: 310px;
+    }
+
+    .img_container {
+        left: 0px;
+    }
+
+    .img_container2 {
+        right: 0px;
+    }
+
+    .team_details {
+        left: 14.6%;
+        font-size: 10px;
+    }
+
+    .team2_details {
+        right: -24.8%;
+    }
+
+    .progress-bar {
+        height: 4px;
+
+    }
+
+    .prize-info span {
+        font-size: 9px;
+    }
+
+    .team_details h3,
+    .team2_details h3 {
+        font-size: 11px;
+    }
+
+    .match-time h3 {
+        font-size: 10px;
+    }
+
+    .match-time p {
+        font-size: 11px;
+    }
+
+    .view-contests a {
+        padding: 10px 10px;
+        font-size: 10px;
+
+    }
+
+    .tutorial {
+        padding: 15px;
+        max-width: 260px;
+    }
+}
+
+
+@media(max-width:335px) {
+    .matches {
+        max-width: 290px;
+    }
+
+    .team_details {
+        left: 15.6%;
+        font-size: 10px;
+    }
+
+    .team2_details {
+        right: -25%;
+    }
+
+    .header h1 {
+        font-size: 16px;
+    }
+
+    .s_team {
+        left: 10px;
+    }
+
+    .hero {
+        padding: 1px;
+    }
+
+    .hero h2 {
+        font-size: 15px;
+    }
+
+    .hero p {
+        font-size: 12px;
+    }
+
+    .tutorial {
+        padding: 10px;
+    }
+
+    .tutorial h2 {
+        font-size: 17px;
+    }
+
+    .tutorial p {
+        font-size: 11px;
+    }
+}
+
+
+@media(max-width:320px) {
+    .matches {
+        max-width: 270px;
+    }
+
+    .team_details {
+        left: 17%;
+        font-size: 10px;
+    }
+
+    .team2_details {
+        right: -24%;
+    }
+
+    .img_container2 {
+        right: 17px;
+    }
+
+    .s_team {
+        left: -10px;
+    }
+
+    .tutorial {
+        padding: 15px;
+        max-width: 240px;
+    }
+}

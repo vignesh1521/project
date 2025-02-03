@@ -4,22 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="contest.css">
-    <link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="../utils.css">
     <title>Match Details</title>
+    <script src="../utils.js"></script>
 </head>
 
 <body>
 
+    <div class="error-box" id="error-box">
+    </div>
+    <div id="loading" style="display: none;">
+        <div class="background"> </div>
+        <div class="loading-screen">
+            <div class="spinner"></div>
+            <p>Loading...</p>
+        </div>
+    </div>
+    <div class="exit" onclick="location.href='/matches'">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="#fff" width="24" height="24">
+            <path d="m3.293 11.293 1.414 1.414L11 6.414V20h2V6.414l6.293 6.293 1.414-1.414L12 2.586l-8.707 8.707z" />
+        </svg>
+    </div>
     <div class="team-header">
         <div class="teams">
 
             <div class="img_container">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSXaTdZs7gGPKnNfRgKQZ7b2bUDBgYAgmwdIw&s"
-                    alt="">
+                <img id="team1_img" src="" alt="">
             </div>
             <div class="team_nick">
-                <p class="f_team">WI</p>
+                <p class="f_team" id="team1_nick"></p>
                 <div class="vs">
                     <?xml version="1.0" encoding="UTF-8"?>
                     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="-40 0 275 183"
@@ -35,78 +48,254 @@
                             fill="#bbbbbb" transform="translate(119,13)" />
                     </svg>
                 </div>
-                <p class="s_team">BAN</p>
+                <p class="s_team" id="team2_nick"></p>
             </div>
             <div class="img_container2">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ796kdGjhEu_614g2UZMjb_eUzsbgHT_Jlsw&s"
-                    alt="">
+                <img id="team2_img" src="" alt="">
             </div>
-            
+
         </div>
-        <div class="time">
-            31h 29m left
+        <div class="time" id="time_left">
         </div>
     </div>
+    <div class="contest_join">
+        <div class="right_deg deg"></div>
+        <div class="text">Select a contest to join</div>
+        <div class="left_deg deg"></div>
+    </div>
+    <div class="contest_con" id="contest_con">
 
 
-
-
-
-
-    <!--
+    </div>
     <script>
-        let server = new URL("http://192.168.1.36:8000");
-        let client = new URL("http://192.168.1.36:5500");
-
-        if (window.location.hostname == "127.0.0.1") {
-            location.hostname = client.hostname
-        }
+        let server = new URL(location)
+        server.port = 8080
         let url = new URL(window.location.href);
         let id = url.searchParams.get("id");
+        let contest_data={}
 
         if (!id || !/^\d+$/.test(id)) {
-            document.body.innerHTML = "<p>Invalid or missing match ID.</p>";
+            display_error("Invalid or missing match ID")
+            location.href = '/matches'
         } else {
-            server.pathname = `/api/contest/${id}`;
-            document.body.innerHTML = "<p>Loading...</p>";
-
-
+            server.pathname = `/api/match/${id}`;
             fetch(server, {
-
                 headers: {
                     "Content-Type": 'application/json',
                     "Authorization": localStorage.getItem('auth_token') ? `Bearer ${localStorage.getItem('auth_token')}` : ''
                 }
             })
-                .then((res) => {
+                .then(async (res) => {
+                    const data = await res.json();
                     if (!res.ok) {
-                        throw new Error("Failed to fetch data from server");
+                        throw new Error(data.msg || "Something went wrong");
                     }
-                    return res.json();
+                    return data;
                 })
                 .then((data) => {
-                    document.body.innerHTML = "";
-                    const container = document.createElement('div');
-
                     if (data.status == "failed") {
-                        if(data.msg=="Invalid or expired token"){
+                        if (data.msg == "Invalid or expired token") {
                             window.location = '/login'
                             return;
                         }
-                        window.location='/'
+                        window.location = '/'
                         return;
                     }
-
-                    container.textContent = JSON.stringify(data, null, 2);
-                    document.body.appendChild(container);
+                    team1_img.src = data.team1_img
+                    team2_img.src = data.team2_img
+                    team1_nick.innerText = data.team1_nick
+                    team2_nick.innerText = data.team2_nick
+                    time_left.innerText = timeLeft(data.time)
                 })
-                .catch((error) => {
-                    console.error("Error:", error);
-                    document.body.innerHTML = "<p>An error occurred while fetching data.</p>";
-                });
+                .catch(error => {
+                    display_error(error.message)
+                })
         }
+        server.pathname = `/api/contest/${id}`;
+        fetch(server, {
+            headers: {
+                "Content-Type": 'application/json',
+                "Authorization": localStorage.getItem('auth_token') ? `Bearer ${localStorage.getItem('auth_token')}` : ''
+            }
+        })
+            .then(async (res) => {
+                const data = await res.json();
+                if (!res.ok) {
+                    throw new Error(data.msg || "Something went wrong");
+                }
+                return data;
+            }).then(data => {
+                let contest_con = document.getElementById("contest_con")
+                data["contest"].forEach(async value => {
+                    let prize_details = await prize_data(value["contest_id"],data["prize_stage"][value["contest_id"]], value["total_spots"],value['spots_available'])
+                    contest_data[value["contest_id"]]=prize_details
+                    let temp = ` <div class="cnt_card">
+            <div class="card">
+                <p>Prize Pool</p>
+                <div class="total_prize">
+                    <div>${value['prize_pool']}</div>
+                    <div contest_id="${value["contest_id"]}" onclick="register_contest('${value["contest_id"]}', '${value["match_id"]}')" class="entry">₹${value['entry_fee']}</div>
+                </div>
+                <div class="filled_bar">
+                    <div class="spots">
+                        <p id="spots_left_${value["contest_id"]}" value="${(value['spots_available'])}" class="left">${(value['spots_available'])} <span>left</span></p>
+                        <p id="total_spots_${value["contest_id"]}" value="${value['total_spots']}" class="total">${value['total_spots']} <span>spots</span></p>
+                    </div>
+                    <div class="filler">
+                        <div class="inc_filler" id="inc_filler_${value["contest_id"]}" style="width:${((value['total_spots'] - value['spots_available']) / value['total_spots']) * 100} "></div>
+                    </div>
+                </div>
+            </div>
+            <div class="prize">
+                <div class="top_prize">
+                    <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="225.000000pt" height="225.000000pt"
+                        viewBox="0 0 225.000000 225.000000" preserveAspectRatio="xMidYMid meet">
+                        <g transform="translate(0.000000,225.000000) scale(0.100000,-0.100000)" fill="#424242"
+                            stroke="none">
+                            <path
+                                d="M768 1499 l-108 -60 26 -52 c15 -29 28 -54 30 -56 2 -2 35 13 73 33 38 20 72 36 75 36 4 0 5 -109 4 -242 l-3 -243 -67 -3 -68 -3 0 -59 0 -60 205 0 205 0 0 60 0 60 -65 0 -65 0 0 325 0 325 -67 0 c-64 0 -74 -4 -175 -61z" />
+                            <path
+                                d="M1470 1070 c0 -33 -3 -40 -20 -40 -13 0 -20 -7 -20 -20 0 -13 7 -20 19 -20 16 0 19 -10 23 -87 4 -74 8 -89 27 -105 42 -33 131 -15 116 24 -5 12 -15 15 -40 11 -30 -5 -35 -2 -40 19 -3 13 -5 49 -3 79 3 53 4 54 36 57 24 2 32 8 32 23 0 15 -7 19 -35 19 -34 0 -35 1 -35 40 0 38 -2 40 -30 40 -28 0 -30 -2 -30 -40z" />
+                            <path
+                                d="M1250 1028 c-13 -7 -31 -25 -39 -40 -14 -25 -14 -29 5 -55 13 -17 40 -34 70 -44 36 -11 49 -21 49 -35 0 -23 -52 -32 -86 -14 -17 10 -24 9 -37 -4 -15 -15 -15 -17 1 -33 26 -26 137 -25 166 1 49 44 13 117 -65 132 -37 7 -59 27 -48 45 4 8 25 10 60 6 42 -4 54 -2 59 10 3 9 1 21 -4 26 -16 16 -104 19 -131 5z" />
+                        </g>
+                    </svg>
+                </div>
+                <div class="amt">
+                    <p>Prize:₹${prize_details["1"]}</p>
+                </div>
+                <div class="prz_img">
+                    <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="225.000000pt" height="225.000000pt"
+                        viewBox="0 0 225.000000 225.000000" preserveAspectRatio="xMidYMid meet">
+                        <g transform="translate(0.000000,225.000000) scale(0.100000,-0.100000)" fill="#000000"
+                            stroke="none">
+                            <path
+                                d="M609 2053 c-32 -38 -20 -377 18 -531 9 -34 13 -66 9 -69 -11 -11 -83 29 -119 66 -62 64 -94 143 -112 284 l-6 47 55 0 c44 0 57 4 66 19 13 25 13 27 -6 45 -19 20 -153 23 -172 4 -17 -17 -15 -149 3 -226 41 -172 141 -286 285 -322 41 -10 48 -17 79 -73 60 -110 136 -220 200 -291 94 -103 112 -165 71 -254 l-19 -42 -55 0 c-68 0 -76 -11 -76 -104 l0 -66 -62 0 c-35 0 -70 -5 -78 -10 -12 -7 -16 -37 -18 -139 l-4 -130 -25 -3 c-34 -4 -52 -32 -37 -55 10 -17 46 -18 519 -18 473 0 509 1 519 18 15 24 -3 51 -38 55 -16 2 -26 10 -27 20 0 9 0 65 1 123 1 132 -4 139 -96 139 l-64 0 0 66 c0 108 8 104 -196 104 -164 0 -176 1 -168 18 4 9 9 51 12 93 5 98 -12 138 -102 238 -208 231 -296 466 -296 792 l0 139 455 0 455 0 0 -139 c0 -325 -88 -561 -297 -793 -79 -88 -105 -140 -101 -206 3 -45 4 -47 33 -47 24 0 31 5 33 25 9 70 26 102 92 175 75 83 136 170 195 282 36 67 41 72 84 83 145 36 245 149 286 322 18 77 20 209 3 226 -8 8 -51 12 -129 12 l-117 0 -4 54 c-8 93 36 86 -533 86 -455 0 -504 -2 -516 -17z m1236 -250 c-18 -136 -51 -222 -112 -284 -35 -37 -108 -77 -119 -66 -4 3 1 37 10 74 18 77 36 216 36 280 l0 43 96 0 95 0 -6 -47z m-505 -1218 l0 -45 -215 0 -215 0 0 45 0 45 215 0 215 0 0 -45z m160 -225 l0 -100 -375 0 -375 0 0 100 0 100 375 0 375 0 0 -100z" />
+                            <path
+                                d="M916 385 c-15 -16 -11 -44 8 -57 6 -4 97 -8 203 -8 161 0 194 3 207 16 9 8 16 19 16 24 0 5 -7 16 -16 24 -23 23 -395 24 -418 1z" />
+                            <path
+                                d="M1098 1837 c-7 -8 -24 -37 -37 -65 -24 -51 -24 -51 -80 -58 -31 -3 -64 -11 -73 -16 -31 -15 -20 -50 29 -100 l47 -47 -12 -61 c-18 -101 0 -115 91 -69 l61 31 62 -31 c91 -46 107 -34 92 68 l-10 64 46 46 c48 49 58 84 29 99 -10 5 -43 13 -74 16 -56 7 -56 7 -80 58 -27 57 -44 78 -64 78 -7 0 -20 -6 -27 -13z m47 -151 c13 -28 23 -35 57 -40 l41 -7 -28 -29 c-22 -23 -27 -35 -23 -65 4 -33 2 -36 -16 -29 -27 9 -75 9 -101 0 -19 -7 -20 -4 -17 31 3 31 -1 43 -23 63 l-26 24 38 11 c25 7 45 21 58 42 11 18 21 32 22 33 1 0 9 -15 18 -34z" />
+                        </g>
+                    </svg>
+                </div>
+                <div class="amt">
+                    <p>Winners:${prize_details["winners_percentage"]}</p>
+                </div>
+            </div>
+        </div>`
+                    contest_con.innerHTML += (temp)
+                });
+                server.pathname = `/api/user/contest/${id}`
+                fetch(server, {
+                    headers: {
+                        "Content-Type": 'application/json',
+                        "Authorization": localStorage.getItem('auth_token') ? `Bearer ${localStorage.getItem('auth_token')}` : ''
+                    }
+                }).then(async res => {
+                    const data = await res.json();
+                    if (!res.ok) {
+                        throw new Error(data.msg || "Something went wrong");
+                    }
+                    return data;
+                }).then(data => {
+                    data.forEach(value => {
+                        contest_data[value["contest_id"]]["joined"]=true
+                        let btn = document.querySelector(`[contest_id='${value["contest_id"]}']`);
+                        btn.removeAttribute("onclick")
+                        btn.innerText = "JOINED"
+                        btn.classList.add("joined")
+
+                    });
+                }).catch(error => {
+                    display_error(error.message)
+                })
+            }).catch(error => {
+                display_error(error.message)
+            })
+
+
+        function register_contest(contest_id, match_id) {
+            loading.style.display = "block"
+            server.pathname = `api/register/contest/${contest_id}`
+            fetch(server, {
+                method: "POST",
+                headers: {
+                    "content-type": 'application/json',
+                    "Authorization": localStorage.getItem('auth_token') ? `Bearer ${localStorage.getItem('auth_token')}` : ''
+                },
+                body: JSON.stringify({ "match_id": match_id })
+            }).then(async res => {
+                const data = await res.json();
+                if (res.status == 401) {
+                    location.href = '/login'
+                }
+
+                if (!res.ok) {
+                    throw new Error(data.msg);
+                }
+                return data;
+            }).then(data => {
+                let spots_left = (document.getElementById(`spots_left_${contest_id}`).getAttribute("value")) - 1
+                let total_spots = document.getElementById(`total_spots_${contest_id}`).getAttribute("value")
+                let inc_filler = document.getElementById(`inc_filler_${contest_id}`)
+                let per = ((total_spots - spots_left) / total_spots) * 100
+                setTimeout(() => {
+                    let btn = document.querySelector(`[contest_id='${contest_id}']`);
+                    loading.style.display = "none"
+                    btn.classList.add("joined")
+                    btn.innerText = "JOINED"
+                    btn.removeAttribute("onclick")
+                    inc_filler.style.width = per
+
+                }, 1000);
+
+
+            }).catch(error => {
+                setTimeout(() => {
+                    loading.style.display = "none"
+                    display_error(error.message)
+                }, 1000);
+            })
+        }
+
+        function prize_data(contest_id,data, no_of_players,spots_available) {
+            let prize_details = {};
+            let total_winners = 0; // To count total number of winners
+
+            // Loop through all stage keys (stage1, stage2, ..., stage10)
+            for (let i = 1; i <= 10; i++) {
+                let key = `stage${i}`;
+                if (data[key]) {
+                    let [rank, prize] = data[key].split(":"); // Split "3-5:40" into ["3-5", "40"]
+                    let numWinners = 1; // Default winner count (for single ranks)
+
+                    if (rank.includes("-")) {
+                        // If it's a range (e.g., "3-5"), calculate number of winners
+                        let [start, end] = rank.split("-").map(Number);
+                        numWinners = end - start + 1;
+                    }
+
+                    prize_details[rank] = parseInt(prize); // Store prize amount
+                    total_winners += numWinners; // Update total winners count
+                }
+            }
+
+            // Calculate winners percentage
+            const winners_percentage = ((total_winners / no_of_players) * 100).toFixed(0); // Round to 2 decimal places
+
+            // Add winners percentage to the prize_details object
+            prize_details["contest_id"]=contest_id
+            prize_details["winners_percentage"] = `${winners_percentage}%`;
+            prize_details["total_spots"]=no_of_players
+            prize_details["spots_available"]=spots_available
+            return prize_details;
+        }
+
+
+console.log(contest_data);
+
     </script>
-    -->
+
 </body>
 
 </html>

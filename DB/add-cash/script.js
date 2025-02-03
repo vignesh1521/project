@@ -19,8 +19,6 @@ window.onload = () => {
     fund.innerText="₹"+data.funds
   })
 }
-
-
 function setAmount(value) {
   document.getElementById("amount-input").value = value;
 }

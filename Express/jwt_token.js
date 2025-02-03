@@ -2,7 +2,7 @@ require('dotenv').config();
 const jwt = require('jsonwebtoken');
 
 function generateJWT(userID) {
-  const secret_token = process.env.jwt_token; 
+  const secret_token = process.env.Jwt_token; 
   if (!secret_token) {
     throw new Error("JWT secret key is not set in environment variables.");
   }
@@ -13,7 +13,7 @@ function generateJWT(userID) {
 }
 
 function validateJWT(token) {
-  const secret_token = process.env.jwt_token;
+  const secret_token = process.env.Jwt_token;
 
   try {
     // Verify the token using the secret key

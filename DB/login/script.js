@@ -35,7 +35,7 @@ form.onsubmit = (event) => {
         }
         localStorage.setItem('auth_token', data.auth_token)
 
-        window.location = '/'
+        window.location = '/matches'
 
 
     })

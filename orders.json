@@ -1,0 +1,188 @@
+{
+  "msg": "Data found.",
+  "status": true,
+  "data": [
+    {
+      "max_rate": 1.24,
+      "venue": "Dubai International Cricket Stadium, Dubai",
+      "match_status": "Live",
+      "s_ovr": "",
+      "venue_id": 83,
+      "series": "International League T20, 2025",
+      "batting_team": "209",
+      "team_a_img": "https://cricketchampion.co.in/webroot/img/teams/1113280942_team.jpg",
+      "toss": "Dubai Capitals have won the toss and have opted to field",
+      "match_time": "08:00 PM",
+      "balling_team": "204",
+      "team_a_scores_over": [
+        {
+          "over": "8.0",
+          "score": "92-1"
+        }
+      ],
+      "fav_team": "DTV",
+      "team_b_id": 204,
+      "match_id": 6651,
+      "matchs": "Qualifier 1",
+      "team_b_short": "DCP",
+      "team_a_over": "8.0",
+      "team_b_scores_over": {},
+      "team_b_over": "",
+      "team_a_id": 209,
+      "match_date": "05-Feb",
+      "session": null,
+      "need_run_ball": "",
+      "team_a_scores": "92-1",
+      "min_rate": 1.23,
+      "team_a": "Desert Vipers",
+      "current_inning": 1,
+      "is_hundred": 1,
+      "trail_lead": "",
+      "team_b": "Dubai Capitals",
+      "series_type": "League",
+      "s_min": "0",
+      "team_b_scores": "",
+      "s_max": "0",
+      "match_type": "T20",
+      "team_a_short": "DTV",
+      "team_a_score": {
+        "1": {
+          "ball": 48,
+          "wicket": 1,
+          "over": "8.0",
+          "score": 92
+        },
+        "team_id": 209
+      },
+      "result": "",
+      "series_id": 475,
+      "team_b_img": "https://cricketchampion.co.in/webroot/img/teams/1736832747_team.jpg"
+    },
+    {
+      "max_rate": 1.91,
+      "venue": "SuperSport Park, Centurion",
+      "match_status": "Live",
+      "s_ovr": "",
+      "venue_id": 59,
+      "series": "SA20, 2025",
+      "batting_team": "214",
+      "team_a_img": "https://cricketchampion.co.in/webroot/img/teams/1085886184_team.png",
+      "toss": "Joburg Super Kings have won the toss and have opted to field",
+      "match_time": "09:00 PM",
+      "balling_team": "213",
+      "team_a_scores_over": [
+        {
+          "over": 0,
+          "score": "0-0"
+        }
+      ],
+      "fav_team": "JSK",
+      "team_b_id": 213,
+      "match_id": 6003,
+      "matchs": "Eliminator",
+      "team_b_short": "JSK",
+      "team_a_over": "0",
+      "team_b_scores_over": {},
+      "team_b_over": "",
+      "team_a_id": 214,
+      "match_date": "05-Feb",
+      "session": null,
+      "need_run_ball": "",
+      "team_a_scores": "0-0",
+      "min_rate": 1.9,
+      "team_a": "Sunrisers Eastern Cape",
+      "current_inning": 1,
+      "is_hundred": 1,
+      "trail_lead": "",
+      "team_b": "Joburg Super Kings",
+      "series_type": "League",
+      "s_min": "0",
+      "team_b_scores": "",
+      "s_max": "0",
+      "match_type": "T20",
+      "team_a_short": "SEC",
+      "team_a_score": {
+        "1": {
+          "ball": 0,
+          "wicket": 0,
+          "over": 0,
+          "score": 0
+        },
+        "team_id": 214
+      },
+      "result": "",
+      "series_id": 434,
+      "team_b_img": "https://cricketchampion.co.in/webroot/img/teams/1277171196_team.png"
+    },
+    {
+      "max_rate": 1.97,
+      "venue": "Shere Bangla National Stadium, Dhaka",
+      "match_status": "Live",
+      "s_ovr": "",
+      "venue_id": 28,
+      "series": "Bangladesh Premier League, 2024-25",
+      "batting_team": "140",
+      "team_a_img": "https://cricketchampion.co.in/webroot/img/teams/1948131812_team.png",
+      "toss": "Chittagong Kings have won the toss and have opted to field",
+      "match_time": "06:00 PM",
+      "match_type": "T20",
+      "team_a_scores_over": [
+        {
+          "over": "8.2",
+          "score": "63-2"
+        }
+      ],
+      "fav_team": "KLT",
+      "team_b_id": 143,
+      "team_b_score": {
+        "1": {
+          "ball": 120,
+          "wicket": 6,
+          "over": "20.0",
+          "score": 163
+        },
+        "team_id": 143
+      },
+      "match_id": 6552,
+      "matchs": "2nd Qualifier",
+      "is_hundred": 1,
+      "team_a_over": "8.2",
+      "team_b_scores_over": [
+        {
+          "over": "20.0",
+          "score": "163-6"
+        }
+      ],
+      "team_b_over": "20.0",
+      "team_a_id": 140,
+      "match_date": "05-Feb",
+      "s_min": "0",
+      "need_run_ball": "Chittagong Kings NEED 101 RUNS IN 11.4 OVERS TO WIN",
+      "team_a_scores": "63-2",
+      "min_rate": 1.96,
+      "team_a": "Chittagong Kings",
+      "current_inning": "2",
+      "balling_team": "143",
+      "trail_lead": "",
+      "team_b_short": "KLT",
+      "team_b": "Khulna Tigers",
+      "series_type": "League",
+      "team_b_scores": "163-6",
+      "s_max": "0",
+      "session": null,
+      "team_a_short": "CGK",
+      "team_a_score": {
+        "2": {
+          "ball": 50,
+          "wicket": 2,
+          "over": "8.2",
+          "score": 63
+        },
+        "team_id": 140
+      },
+      "result": "",
+      "series_id": 469,
+      "team_b_img": "https://cricketchampion.co.in/webroot/img/teams/660095257_team.png"
+    }
+  ]
+}

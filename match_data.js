@@ -1,5 +1,7 @@
-const { error } = require('console');
+const { error, log } = require('console');
 const fs = require('fs');
+const { db } = require('./db');
+
 
 const readData = () => {
     if (fs.existsSync('match_data.json')) {
@@ -21,6 +23,8 @@ const read_upcoming_match_data = () => {
 const write_upcoming_match_data = (data) => {
     fs.writeFileSync('upcoming_match_data.json', JSON.stringify(data, null, 2));
 };
+
+
 let matchData = {
     "msg": "Data found.",
     "status": true,
@@ -727,38 +731,176 @@ async function update_matches() {
         data["matchData"] = over
         writeData(data)
         console.log("match data logged");
-        
+
         return result
     } catch (error) {
         console.error(error);
     }
 }
 
-async function api_upcoming_matches() {
-    const url_upcoming_matches = 'https://cricket-live-line1.p.rapidapi.com/upcomingMatches'
-    try{
-        let upcoming_matches =await fetch(url_upcoming_matches,options)
-        let upcoming_matches_result =await upcoming_matches.json()
-        write_upcoming_match_data(upcoming_matches_result)
-        console.log("Upcoming matches logged")
-    }catch(error){
-        console.log(error)
-    }
-}
-//api_upcoming_matches();
-const AllowedMatches=[7260]
 
 async function upcoming_matches(matchList) {
-    let get_match=matchList ||AllowedMatches
-    let data =read_upcoming_match_data().data
-    let m_data=data.filter(match => get_match.includes(match.match_id));
-    return m_data
-    
+    let data = read_upcoming_match_data().data;
+
+    if (matchList) {
+        let m_data = data.filter(match => matchList.includes(match.match_id));
+        return m_data.length ? m_data : 0;
+    } else {
+        let match_query = "SELECT match_id FROM matches WHERE 1";
+
+        // Use a promise to handle db.query asynchronously
+        const result = await new Promise((resolve, reject) => {
+            db.query(match_query, (error, results) => {
+                if (error) reject(error);
+                else resolve(results);
+            });
+        });
+
+        let match_array = result.map(match => match.match_id);
+        let m_data = data.filter(match => match_array.includes(match.match_id));
+        return m_data.length ? m_data : 0;
+    }
 }
+
+async function update_upcoming_matches() {
+    const urlForUpcomingMatches = 'https://cricket-live-line1.p.rapidapi.com/upcomingMatches';
+    try {
+        const upcomingMathches = await fetch(urlForUpcomingMatches, options)
+        let result = await upcomingMathches.json()
+        write_upcoming_match_data(result)
+
+    } catch (err) {
+        console.log(err);
+
+    }
+}
+//update_upcoming_matches()
 upcoming_matches();
 //update_matches()
-setInterval(()=>{
-// update_matches()
-},30000)
+setInterval(() => {
+    //update_matches()
+}, 30000)
+function groupAndDisplayPrizes(prizeDistribution) {
+    /**
+     * Group and display prizes in the desired format.
+     * @param {Object} prizeDistribution - An object containing the prize distribution for each rank.
+     */
+    const groupedPrizes = new Map();
 
-module.exports = { match_info,upcoming_matches };
+    // Group ranks by prize using Map
+    for (const [rankStr, prize] of Object.entries(prizeDistribution)) {
+        const rank = parseInt(rankStr);
+
+        // Initialize the array for the prize if it doesn't exist
+        if (!groupedPrizes.has(prize)) {
+            groupedPrizes.set(prize, []);
+        }
+
+        groupedPrizes.get(prize).push(rank);
+    }
+
+    let generated_prize_table = []
+    for (const [prize, ranks] of groupedPrizes.entries()) {
+        let data = {}
+        ranks.sort((a, b) => a - b); // Ensure ranks are sorted
+
+        if (ranks.length === 1) {
+            const rank = ranks[0];
+            if (rank === 1) {
+                data["rank"] = '🥇 1'
+                data["winnings"] = `${prize}`;
+            } else if (rank === 2) {
+                data["rank"] = '🥈 2'
+                data["winnings"] = `${prize}`;
+            } else if (rank === 3) {
+                data["rank"] = '🥉 3'
+                data["winnings"] = `${prize}`;
+            } else {
+                data["rank"] = `# ${rank}`
+                data["winnings"] = `${prize}`;
+            }
+        } else {
+            data["rank"] = `# ${ranks[0]} - ${ranks[ranks.length - 1]}`
+            data["winnings"] = `${prize}`
+            // console.log(`${ranks[0]}-${ranks[ranks.length - 1]}: ₹${prize}`);
+        }
+        generated_prize_table.push(data)
+
+    }
+    return generated_prize_table
+}
+function distributePrizes(registeredPlayers, entryFee, platformFeeFilled, platformFeePercentNotFilled, prizeOrder, cnFilled) {
+    // Calculate total collection
+    const totalCollection = registeredPlayers * entryFee;
+
+    const platformFee = cnFilled
+        ? platformFeeFilled
+        : Math.round((platformFeePercentNotFilled / 100) * totalCollection);
+
+    const prizePool = totalCollection - platformFee;
+
+    const prizeDistribution = {};
+    let remainingPrizePool = prizePool;
+
+    for (const [startRank, endRank, prizeAmount] of prizeOrder) {
+        for (let rank = startRank; rank <= endRank; rank++) {
+            if (remainingPrizePool >= prizeAmount) {
+                prizeDistribution[rank] = prizeAmount;
+                remainingPrizePool -= prizeAmount;
+            } else {
+                if (remainingPrizePool > 0) {
+                    prizeDistribution[rank] = remainingPrizePool;
+                    remainingPrizePool = 0;
+                }
+                break;
+            }
+        }
+        if (remainingPrizePool === 0) break;
+    }
+
+    return {
+        totalCollection,
+        platformFee,
+        prizePool,
+        prizeDistribution
+    };
+}
+
+// // Example usage
+// const registeredPlayers = 2000;
+// const totalEntry = 2000;
+// const entryFee = 75;
+// const platformFeeFilled = 24000;
+// const platformFeePercentNotFilled = 25;
+// // const prizeOrder = [[1, 420, 300]];
+// const cnFilled = registeredPlayers === totalEntry;
+
+
+function ranking_order(registeredPlayers,
+    entryFee,
+    platformFeeFilled,
+    platformFeePercentNotFilled,
+    prize_table,
+    cnFilled) {
+
+    
+    const result = distributePrizes(
+        registeredPlayers,
+        entryFee,
+        platformFeeFilled,
+        platformFeePercentNotFilled,
+        prize_table,
+        cnFilled
+    );
+
+    return (groupAndDisplayPrizes(result.prizeDistribution));
+}
+
+
+// console.log("Total Collection:", result.totalCollection);
+// console.log("Platform Fee:", result.platformFee);
+// console.log("Prize Pool:", result.prizePool);
+// console.log("Prize Distribution:");
+
+
+module.exports = { match_info, upcoming_matches, ranking_order };

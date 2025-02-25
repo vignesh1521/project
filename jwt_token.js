@@ -16,7 +16,7 @@ function validateJWT(token) {
   const secret_token = process.env.Jwt_token;
 
   try {
-    // Verify the token using the secret key
+    
     const decoded = jwt.verify(token, secret_token);
     return decoded; 
   } catch (error) {

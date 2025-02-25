@@ -11,7 +11,8 @@ const { db, db_promise } = require('./db');
 const { timeLeft } = require("./script.js");
 const { verify } = require('jsonwebtoken');
 const e = require('express');
-const { match_info, upcoming_matches } = require('./match_data.js')
+const { match_info, upcoming_matches, ranking_order } = require('./match_data.js');
+const { type } = require('os');
 const app = express();
 const port = 8080;
 
@@ -33,7 +34,6 @@ const razorpay = new Razorpay({
   key_secret: 'McNBNXvoWbX8llkHd3EggW4S',
 });
 
-
 const readData = () => {
   if (fs.existsSync('orders.json')) {
     const data = fs.readFileSync('orders.json');
@@ -50,7 +50,6 @@ app.get('/', (req, res) => {
     msg: 'Hello World'
   });
 });
-
 app.post('/api/login', (req, res) => {
 
   try {
@@ -64,12 +63,10 @@ app.post('/api/login', (req, res) => {
     let query = `select * from user_details where mail_id=?`;
     db.query(query, [mail_id], (err, result) => {
       if (err) {
-        res.status(500).json({
+        return res.status(500).json({
           status: "failed",
           msg: "unknown error occured"
         })
-        console.log(err)
-        return;
       }
 
       if (result.length == 0) {
@@ -104,7 +101,6 @@ app.post('/api/login', (req, res) => {
   }
 
 })
-
 app.get('/api/matches', (req, res) => {
 
   const token = req.header('Authorization')?.replace('Bearer ', '');
@@ -113,7 +109,6 @@ app.get('/api/matches', (req, res) => {
     const query = "select * from matches";
     db.query(query, (err, result) => {
       if (err) {
-        console.log(err);
         res.status(500).json({ error: "Fetch Failed" })
         return;
       }
@@ -130,8 +125,7 @@ app.get('/api/matches', (req, res) => {
     return;
   }
 });
-
-app.get('/api/match/:id',async (req, res) => {
+app.get('/api/match/:id', async (req, res) => {
 
   const token = req.header('Authorization')?.replace('Bearer ', '');
   try {
@@ -141,12 +135,19 @@ app.get('/api/match/:id',async (req, res) => {
       res.status(400).json({ error: "Invalid match ID" });
       return;
     }
-    let match_data=await upcoming_matches([parseInt(id)]);
-    
-    res.json(match_data)
+    let match_data = await upcoming_matches([parseInt(id)]);
+
+    if (!match_data.length) {
+      return res.status(400).json({
+        status: "Failed",
+        msg: "No match data found"
+      })
+
+    }
+    res.json(match_data[0])
   }
   catch (error) {
-    res.json({
+    res.status(400).json({
       status: "failed",
       msg: "Invalid or expired token"
     })
@@ -176,15 +177,7 @@ app.get('/api/contest/:id', (req, res) => {
         });
         return;
       }
-      let prize_data = "SELECT * FROM prize_details WHERE match_id=?"
-      const [prize_data_result] = await db_promise.execute(prize_data, [id]);
-      const redefine_data = Object.fromEntries(
-        prize_data_result.map(item => [item.contest_id, item])
-      );
-
-
-
-      res.json({ contest: result, prize_stage: redefine_data })
+      res.json({ contest: result })
     })
   }
   catch (error) {
@@ -250,7 +243,6 @@ app.post('/api/add-cash', async (req, res) => {
         receipt,
         notes
       };
-      console.log(options);
       const order = await razorpay.orders.create(options);
       // Read current orders, add new order, and write back to the file
       const orders = readData();
@@ -363,13 +355,15 @@ app.post('/api/register/contest/:contest_id', async (req, res) => {
     }
 
     // Check if match exists and has not started
-    const match_status = "SELECT time FROM matches WHERE match_id = ?";
+
+    const match_status = "SELECT match_time,date_wise FROM matches WHERE match_id = ?";
     const [match] = await db_promise.execute(match_status, [match_id]);
+
     if (!match.length) {
       return res.status(404).json({ status: "Failed", msg: "Match not found" });
     }
-    if (timeLeft(match[0].time) === "On going") {
-      return res.status(400).json({ status: "Failed", msg: "The Match is ongoing" });
+    if (timeLeft(match[0].date_wise, match[0].match_time) === "Live" || timeLeft(match[0].date_wise, match[0].match_time) == null) {
+      return res.status(400).json({ status: "Failed", msg: "The Match is Live" });
     }
 
     // Check if contest exists
@@ -407,6 +401,7 @@ app.post('/api/register/contest/:contest_id', async (req, res) => {
 
     // Start transaction
     const connection = await db_promise.getConnection();
+
     try {
       await connection.beginTransaction();
 
@@ -445,7 +440,6 @@ app.post('/api/register/contest/:contest_id', async (req, res) => {
       return res.status(401).json({ status: "Failed", msg: "Invalid or expired token" });
 
     } else {
-      console.log(error);
 
       return res.status(500).json({ status: "Failed", msg: error.message });
 
@@ -459,7 +453,20 @@ app.get('/api/user/contest/:match_id', (req, res) => {
     let match_id = req.params.match_id;
     let query = "SELECT * FROM registered_contest WHERE user_id=? and match_id=?"
     db.query(query, [decoded_token.userId, match_id], (err, result) => {
-      res.json(result)
+      if (err) {
+        res.status(500).json({
+          status: "Failed",
+          msg: "DataBase connection error"
+        })
+
+      }
+      if (!result.length) {
+        return res.status(200).json({
+          status: "success",
+          msg: "No contest's joined"
+        })
+      }
+      return res.json(result)
     })
 
   } catch (error) {
@@ -468,42 +475,110 @@ app.get('/api/user/contest/:match_id', (req, res) => {
   }
 })
 
+app.get('/api/rankings/:match_id/:contest_id', async (req, res) => {
+
+  try {
+    let { match_id, contest_id } = req.params;
+    let match_query = "SELECT * FROM contest WHERE match_id=? and contest_id=?"
+    let match_query_result = await db_promise.execute(match_query, [match_id, contest_id])
+    let query_result = match_query_result[0]
+    if (!query_result.length) {
+      return res.status(400).json({
+        status: "Failed",
+        msg: "No match data found"
+      })
+    }
+    result = query_result[0]
+    let max_prize = JSON.parse(result.prize_order)
+    let prize_order = []
+    for (const [stage, value] of Object.entries(max_prize)) {
+      const [rankPart, prize] = value.split(':');
+      let order_temp = []
+      if (rankPart.includes('-')) {
+        const [startRank, endRank] = rankPart.split('-').map(Number);
+        order_temp.push(startRank, endRank, Number(prize))
+        prize_order.push(order_temp)
+      } else {
+        // Handle single rank
+        const rank = parseInt(rankPart, 10);
+        order_temp.push(rank, rank, Number(prize))
+        prize_order.push(order_temp)
+      }
+    }
+
+    let registeredPlayers = result.total_spots - result.spots_available;
+    let totalEntry = result.total_spots;
+    let entryFee = result.entry_fee
+    let platformFeeFilled = result.platform_filler_fee
+    let platformFeePercentNotFilled = result.platform_fee
+    const cnFilled = registeredPlayers === totalEntry;
+    let current_fill;
+
+
+    if (registeredPlayers < result.minimum_players) {
+      current_fill = {
+        data: "Winners will be added soon...!"
+      }
+    }
+    else {
+      current_fill = ranking_order(registeredPlayers,
+        entryFee,
+        platformFeeFilled,
+        platformFeePercentNotFilled,
+        prize_order,
+        cnFilled)
+    }
+    let max_fill = ranking_order(totalEntry,
+      entryFee,
+      platformFeeFilled,
+      platformFeePercentNotFilled,
+      prize_order,
+      true)
+    if (result.type == "practice") {
+      return res.json({ data: "Practice contest" })
+    }
+    res.json({ max_fill, current_fill })
+
+
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: "Failed",
+      msg: "Invalid or expired token"
+    })
+  }
+})
+
 app.get('/api/upcoming_matches', async (req, res) => {
+
   const token = req.header('Authorization')?.replace('Bearer ', '');
   try {
     const decoded_token = validateJWT(token)
     let upcoming_matches_data = await upcoming_matches();
-    res.json(upcoming_matches_data)
+    if (!upcoming_matches_data.length) {
+      return res.status(404).json({
+        "Failed":"No data found"
+      })
+    }
+    else {
 
+      return res.json(upcoming_matches_data)
+    }
   } catch (error) {
     return res.status(401).json({ status: "Failed", msg: "Invalid or expired token" });
 
   }
 })
-
-
-
 app.get('/api/live_match/overs/', (req, res) => {
   res.json(match_overs())
 })
-//app.get('/get',async (req,res)=>{
-//  let resource=await data()
-//  console.log(resource);
-//    
-//  
-//})
+
 app.get('/api/live_match/info/', (req, res) => {
   res.json(match_info())
 })
-
-
-
-
-
 app.get("*", (req, res) => {
   res.send("404 page not found")
 });
-
 app.listen(port, () => {
   console.log(`Server listening on port http://localhost:${port}`);
 });
